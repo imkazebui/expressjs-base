@@ -10,8 +10,9 @@ import { notFoundHandler } from "./middleware/not-found.js";
 
 import configPassport from "./config/passport";
 
-const __dirname = path.resolve(path.dirname(""));
+import { usersRouter } from "./modules/users/users.router";
 
+const __dirname = path.resolve(path.dirname(""));
 const app = express();
 const port = 3000;
 
@@ -30,6 +31,8 @@ app.use(passport.initialize());
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.use("/user", usersRouter);
 
 app.use(errorHandler);
 app.use(notFoundHandler);
