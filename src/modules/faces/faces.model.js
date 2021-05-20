@@ -21,6 +21,10 @@ const faceSchema = new mongoose.Schema({
     type: Boolean,
     require: true,
   },
+  // isCorrect: {
+  //   type: String,
+  //   default: "null",
+  // },
 });
 
 export default mongoose.model("Faces", faceSchema);

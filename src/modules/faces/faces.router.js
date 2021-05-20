@@ -48,6 +48,8 @@ facesRouter.post("/detect-face", async (req, res) => {
 
     res.sendStatus(204);
   } catch (e) {
+    console.log("e", e);
+    console.log("e.messages", e.message);
     res.status(404).send(e.message);
   }
 });
