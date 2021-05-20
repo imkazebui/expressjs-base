@@ -3,6 +3,7 @@ import path from "path";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import cors from "cors";
 // const passport = require("passport");
 
 import mongoose from "mongoose";
@@ -25,6 +26,7 @@ const dbUrl =
 
 // adding Helmet to enhance your API's security
 app.use(helmet());
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
