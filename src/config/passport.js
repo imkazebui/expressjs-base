@@ -1,4 +1,5 @@
-import PassportJwt from "passport-jwt";
+// import PassportJwt from "passport-jwt";
+const PassportJwt = require("passport-jwt");
 import fs from "fs";
 import path from "path";
 
