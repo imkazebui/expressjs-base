@@ -17,9 +17,9 @@ import { facesRouter } from "./modules/faces/faces.router.js";
 
 const __dirname = path.resolve(path.dirname(""));
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const dbUrl =
-  "mongodb+srv://nhatnguyet:Aa123456!@cluster0.c8h20.mongodb.net/detect-face?retryWrites=true&w=majority";
+  "mongodb+srv://nhatnguyet:hackthoaimaidibanoi@cluster0.c8h20.mongodb.net/detect-face?retryWrites=true&w=majority";
 
 // configPassport(passport);
 

@@ -1,5 +1,8 @@
+import nodemailer from "nodemailer";
 import { Router } from "express";
 import FacesModel from "./faces.model.js";
+
+const emailSender = "groupnhatnguyet@gmail.com";
 
 export const facesRouter = Router();
 
@@ -17,6 +20,31 @@ facesRouter.post("/detect-face", async (req, res) => {
 
     const face = new FacesModel(body);
     await face.save();
+
+    if (body.isStranger) {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: emailSender,
+          pass: "Aa123456!",
+        },
+      });
+
+      const mailOptions = {
+        from: emailSender,
+        to: "buithanhphuong.it@gmail.com",
+        subject: "Sending Email using Node.js",
+        text: "That was easy!",
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+    }
 
     res.sendStatus(204);
   } catch (e) {
