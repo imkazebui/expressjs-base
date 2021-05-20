@@ -5,16 +5,21 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 // const passport = require("passport");
 
+import mongoose from "mongoose";
+
 import { errorHandler } from "./middleware/error.js";
 import { notFoundHandler } from "./middleware/not-found.js";
 
 // import configPassport from "./config/passport";
 
 import { usersRouter } from "./modules/users/users.router.js";
+import { facesRouter } from "./modules/faces/faces.router.js";
 
 const __dirname = path.resolve(path.dirname(""));
 const app = express();
 const port = 3000;
+const dbUrl =
+  "mongodb+srv://nhatnguyet:Aa123456!@cluster0.c8h20.mongodb.net/detect-face?retryWrites=true&w=majority";
 
 // configPassport(passport);
 
@@ -32,11 +37,19 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/user", usersRouter);
+app.use("/api", usersRouter);
+app.use("/api", facesRouter);
 
 app.use(errorHandler);
 app.use(notFoundHandler);
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+mongoose
+  .connect(dbUrl)
+  .then(() =>
+    app.listen(port, () =>
+      console.log(`Server running on http://localhost:${port}`)
+    )
+  )
+  .catch((error) => {
+    throw error;
+  });
