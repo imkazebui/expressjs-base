@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import { Router } from "express";
 import FacesModel from "./faces.model.js";
+import UserModel from "../users/users.model.js";
 
 const emailSender = "groupnhatnguyet@gmail.com";
 
@@ -14,6 +15,9 @@ facesRouter.post("/detect-face", async (req, res) => {
     await face.save();
 
     if (body.isStranger) {
+      const user = await UserModel.findOne({ name: "phuong" });
+      const html = `<p>Here is the face of stranger</p>`;
+
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -24,9 +28,16 @@ facesRouter.post("/detect-face", async (req, res) => {
 
       const mailOptions = {
         from: emailSender,
-        to: "buithanhphuong.it@gmail.com",
-        subject: "Sending Email using Node.js",
-        text: "That was easy!",
+        to: user.emailPrimary,
+        cc: user.emailOptional,
+        subject: "Warning: Someone stranger in your home",
+        html,
+        attachments: [
+          {
+            filename: "stranger.png",
+            path: `data:image/png;base64,${body.images}`,
+          },
+        ],
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
