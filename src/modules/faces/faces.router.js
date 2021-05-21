@@ -6,14 +6,6 @@ const emailSender = "groupnhatnguyet@gmail.com";
 
 export const facesRouter = Router();
 
-facesRouter.get("/", async (req, res) => {
-  try {
-    res.status(200);
-  } catch (e) {
-    res.status(404).send(e.message);
-  }
-});
-
 facesRouter.post("/detect-face", async (req, res) => {
   try {
     const body = req.body;
@@ -54,9 +46,28 @@ facesRouter.post("/detect-face", async (req, res) => {
   }
 });
 
+facesRouter.put("/detect-face/:id", async (req, res) => {
+  try {
+    const {
+      params: { id },
+      body,
+    } = req;
+
+    await FacesModel.findByIdAndUpdate({ _id: id }, body);
+
+    res.sendStatus(204);
+  } catch (e) {
+    res.status(404).send(e.message);
+  }
+});
+
 facesRouter.get("/detect-face", async (req, res) => {
   try {
-    const allFace = await FacesModel.find();
+    const allFace = await FacesModel.find({}, null, {
+      sort: {
+        _id: -1,
+      },
+    });
 
     res.status(200).json({
       data: allFace,
