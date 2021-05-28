@@ -12,7 +12,7 @@ import { notFoundHandler } from "./middleware/not-found.js";
 
 // import configPassport from "./config/passport";
 
-import { usersRouter } from "./modules/users/users.router.js";
+import { userRouter } from "./modules/user/user.router.js";
 
 const __dirname = path.resolve(path.dirname(""));
 const app = express();
@@ -21,6 +21,9 @@ const port = 3000;
 try {
   await db.sequelize.authenticate();
   console.log("Connection has been established successfully.");
+
+  await db.sequelize.sync({ force: true });
+  console.log("All models were synchronized successfully.");
 } catch (error) {
   console.error("Unable to connect to the database:", error);
 }
@@ -41,7 +44,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/user", usersRouter);
+app.use("/api/user", userRouter);
 
 app.use(errorHandler);
 app.use(notFoundHandler);
