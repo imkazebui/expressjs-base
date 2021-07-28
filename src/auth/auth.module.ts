@@ -17,7 +17,7 @@ const PRIV_KEY = getKeyFile('priv.pem');
     JwtModule.register({
       privateKey: PRIV_KEY,
       signOptions: {
-        expiresIn: '60s',
+        expiresIn: '30 days',
         algorithm: 'RS256',
       },
     }),
