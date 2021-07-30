@@ -1,13 +1,10 @@
-import { Column, Model, Table, Unique } from 'sequelize-typescript';
-import { Exclude } from 'class-transformer';
+import { Column, Model, Table, DataType } from 'sequelize-typescript';
 
 @Table
 export class User extends Model {
-  @Unique
-  @Column
+  @Column({ type: DataType.STRING, unique: true, allowNull: false })
   username: string;
 
-  @Exclude()
   @Column
   pwd: string;
 

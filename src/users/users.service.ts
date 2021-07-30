@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import ErrorCode from 'src/database/error-code.enum';
 import { generatePassword } from 'src/utils/pwd';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.model';
@@ -11,21 +12,33 @@ export class UsersService {
     private readonly userModel: typeof User,
   ) {}
 
-  create(body: CreateUserDto): Promise<User> {
+  async create(payload: CreateUserDto): Promise<User> {
     const d = new Date();
     const currentTime = d.toISOString();
 
-    const user = new User();
-    user.firstName = body.firstName;
-    user.lastName = body.lastName;
-    user.username = body.username;
-    user.pwd = generatePassword(body.pwd, currentTime);
+    const user = new User(payload);
+    user.pwd = generatePassword(payload.pwd, currentTime);
     user.updatedAt = currentTime;
     user.createdAt = currentTime;
 
-    return user.save({
-      silent: true,
-    });
+    try {
+      await user.save({
+        silent: true,
+        validate: true,
+      });
+      return user;
+    } catch (error) {
+      if (error?.original?.code === ErrorCode.UniqueViolation) {
+        throw new HttpException(
+          'User with that username already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw new HttpException(
+        'Something went wrong',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findAll(): Promise<User[]> {

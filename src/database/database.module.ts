@@ -16,6 +16,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         port: configService.get('DATABASE_PORT'),
         autoLoadModels: configService.get('DATABASE_AUTO_LOAD_MODELS'),
         synchronize: configService.get('DATABASE_SYNCHRONIZE'),
+        sync: {
+          force: true,
+        },
         dialectOptions: {
           ssl: {
             require: configService.get('DATABASE_SSL_REQUIRE'),
