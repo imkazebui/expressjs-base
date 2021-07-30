@@ -1,31 +1,33 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      username: 'nxyhontbwhlufb',
-      password:
-        'd9bdc0215c1ad59bf1d0ded1b2d36ac7949ac875e788d01898ac7c7ff97bb9c5',
-      database: 'd9914vejijtuof',
-      autoLoadModels: true,
-      synchronize: true,
-      dialect: 'postgres',
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
-      },
-      host: 'ec2-54-83-82-187.compute-1.amazonaws.com',
-      port: 5432,
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        DATABASE_USERNAME: Joi.string().required(),
+        DATABASE_PASS: Joi.string().required(),
+        DATABASE_NAME: Joi.string().required(),
+        DATABASE_DIALECT: Joi.string().required(),
+        DATABASE_HOST: Joi.string().required(),
+        DATABASE_PORT: Joi.number().required(),
+        DATABASE_REJECT_UNAUTHORIZED: Joi.boolean().default(false),
+        DATABASE_SSL_REQUIRE: Joi.boolean().default(true),
+        DATABASE_AUTO_LOAD_MODELS: Joi.boolean().default(true),
+        DATABASE_SYNCHRONIZE: Joi.boolean().default(true),
+      }),
     }),
+    DatabaseModule,
     UsersModule,
     AuthModule,
     FilesModule,
   ],
 })
 export class AppModule {}
+
