@@ -4,12 +4,14 @@ import ErrorCode from 'src/database/error-code.enum';
 import { generatePassword } from 'src/utils/pwd';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.model';
+import EmailService from '../email/email.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User)
     private readonly userModel: typeof User,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(payload: CreateUserDto): Promise<User> {
@@ -26,6 +28,13 @@ export class UsersService {
         silent: true,
         validate: true,
       });
+
+      this.emailService.sendEmail({
+        to: 'buithanhphuong.it@gmail.com',
+        subject: 'Text nextjs email',
+        text: 'Nodejs Content',
+      });
+
       return user;
     } catch (error) {
       if (error?.original?.code === ErrorCode.UniqueViolation) {
