@@ -41,8 +41,15 @@ export class UsersService {
     }
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.findAll();
+  async findAll(
+    search?: string,
+    offset?: number,
+    limit?: number,
+  ): Promise<User[]> {
+    return this.userModel.findAll({
+      limit,
+      offset,
+    });
   }
 
   findOne(params: any): Promise<User> {

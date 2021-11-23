@@ -7,6 +7,7 @@ import {
   Post,
   UseGuards,
   Request,
+  Query,
   ClassSerializerInterceptor,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { UserDto } from './dto/user.dto';
 import { User } from './user.model';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PaginationParams } from 'src/utils/types/paginationParams';
 
 @ApiTags('Users')
 @Controller('users')
@@ -30,8 +32,11 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: 'Get list user' })
-  async findAll(): Promise<UserDto[]> {
-    const users = await this.usersService.findAll();
+  async findAll(
+    @Query('search') search: string,
+    @Query() { offset, limit }: PaginationParams,
+  ): Promise<UserDto[]> {
+    const users = await this.usersService.findAll(search, offset, limit);
     return users.map((user) => new UserDto(user));
   }
 
